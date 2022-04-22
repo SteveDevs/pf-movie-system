@@ -14,7 +14,7 @@ class AddTheaterIdToMoviePlaysTable extends Migration
     public function up()
     {
         Schema::table('movie_plays', function (Blueprint $table) {
-            $table->unsignedBigInteger('theater_id');
+            $table->unsignedBigInteger('theater_id')->after('movie_id');
             $table->foreign('theater_id')->references('id')->on('theaters');
         });
     }

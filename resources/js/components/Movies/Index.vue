@@ -17,7 +17,7 @@ export default {
     },
     methods: {
         fetchMovies() {
-            axios.get('/api/movies')
+            axios.get('/api/movie-plays')
                 .then(response => this.movies = response.data)
                 .catch( error => console.log(error))
         }

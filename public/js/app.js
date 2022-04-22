@@ -21262,7 +21262,7 @@ __webpack_require__.r(__webpack_exports__);
     fetchMovies: function fetchMovies() {
       var _this = this;
 
-      axios.get('/api/movies').then(function (response) {
+      axios.get('/api/movie-plays').then(function (response) {
         return _this.movies = response.data;
       })["catch"](function (error) {
         return console.log(error);
