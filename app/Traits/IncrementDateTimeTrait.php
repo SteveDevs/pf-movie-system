@@ -11,8 +11,9 @@ trait IncrementDateTimeTrait {
      * @param int $duration
      * @return array
      */
-    public function incrementStartEndTime(Carbon $startTime,int $duration) : array
+    public function incrementStartEndTime(string $startTime,int $duration) : array
     {
+        $startTime = Carbon::parse($startTime);
         $startTime = $this->nextIncrement($startTime);
         $endTime = $this->nextIncrement(Carbon::parse($startTime)->addSeconds($duration));
 

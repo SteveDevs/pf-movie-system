@@ -3,9 +3,11 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Traits\IncrementDateTimeTrait;
 
 class MoviePlayResource extends JsonResource
 {
+    use IncrementDateTimeTrait;
     /**
      * Transform the resource into an array.
      *
@@ -14,6 +16,13 @@ class MoviePlayResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        $incrementStartEnd = $this->incrementStartEndTime($this->start_time, $this->movie->duration);
+
+        return [
+            'movie_play_id' => $this->movie_play_id,
+            'movie_name' => $this->movie->name,
+            'start_time' => $incrementStartEnd['startTime'],
+            'end_time' => $incrementStartEnd['endTime'],
+        ];
     }
 }

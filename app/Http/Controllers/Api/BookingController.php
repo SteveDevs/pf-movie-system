@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Movie;
+use App\Models\MoviePlay;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Resources\BookingResource;
 use App\Http\Requests\StoreMovieBookingRequest;
 use App\Models\MovieBooking;
 use App\Traits\BookingTrait;
+use App\Http\Resources\MoviePlayResource;
 
 class BookingController extends Controller
 {
@@ -26,7 +28,6 @@ class BookingController extends Controller
         return BookingResource::collection(
             $bookings
         );
-
     }
 
     /**
@@ -34,9 +35,13 @@ class BookingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(User $user, Movie $movie)
+    public function create(MoviePlay $moviePlay)
     {
+        $moviePlay->with('movie')->first();
 
+        return $this->responseSuccess(
+            new MoviePlayResource($moviePlay)
+        );
     }
 
     /**
@@ -47,12 +52,16 @@ class BookingController extends Controller
      */
     public function store(StoreMovieBookingRequest $request)
     {
+        print_r('test');
         MovieBooking::create([
             'movie_play_id' => $request->movie_play_id,
             'unique_ref' => $this->genBookingRef(),
+            'status_id' => 1,
             'created_at' => now(),
             'updated_at' => now()
         ]);
+
+        return $this->responseSuccess([], 201);
     }
 
     /**
@@ -61,42 +70,15 @@ class BookingController extends Controller
      * @param  \App\Models\MovieBooking  $movieBooking
      * @return \Illuminate\Http\Response
      */
-    public function show(MovieBooking $movieBooking)
+    public function cancelBokoing(MovieBooking $movieBooking)
     {
-        //
-    }
+        if(now()->addHour() > $movieBooking->start_time){
+            return $this->responseError([], 'Cut off time for cancelling hsa passed.');
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\MovieBooking  $movieBooking
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(MovieBooking $movieBooking)
-    {
-        //
-    }
+        $movieBooking->status_id = 2;
+        $movieBooking->save();
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\MovieBooking  $movieBooking
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, MovieBooking $movieBooking)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\MovieBooking  $movieBooking
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(MovieBooking $movieBooking)
-    {
-        //
+        return $this->responseSuccess([], 'Booking was successfully cancelled');
     }
 }

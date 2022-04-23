@@ -7,7 +7,6 @@ use App\Models\Movie;
 use App\Models\MoviePlay;
 use App\Models\Theater;
 use App\Traits\IncrementDateTimeTrait;
-use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
 
