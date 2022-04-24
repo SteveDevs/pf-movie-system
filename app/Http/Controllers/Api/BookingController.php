@@ -25,9 +25,7 @@ class BookingController extends Controller
     {
         $bookings = $user->with('bookings')->get();
 
-        return BookingResource::collection(
-            $bookings
-        );
+        return BookingResource::collection($bookings);
     }
 
     /**
@@ -52,7 +50,6 @@ class BookingController extends Controller
      */
     public function store(StoreMovieBookingRequest $request)
     {
-        print_r('test');
         MovieBooking::create([
             'movie_play_id' => $request->movie_play_id,
             'unique_ref' => $this->genBookingRef(),

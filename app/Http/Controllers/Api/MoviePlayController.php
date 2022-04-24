@@ -2,8 +2,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CinemaTheaterMoviePlayResource;
-use App\Models\Cinema;
+use App\Http\Resources\MoviePlayResource;
+use App\Models\MoviePlay;
 
 class MoviePlayController extends Controller
 {
@@ -13,7 +13,6 @@ class MoviePlayController extends Controller
      */
     public function index()
     {
-       // print_r(Cinema::with('plays.movie')->get());
-        return CinemaTheaterMoviePlayResource::collection(Cinema::with('plays.movie')->get());
+        return MoviePlayResource::collection(MoviePlay::with('movie')->get());
     }
 }

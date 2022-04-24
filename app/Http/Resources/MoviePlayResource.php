@@ -23,6 +23,7 @@ class MoviePlayResource extends JsonResource
             'movie_name' => $this->movie->name,
             'start_time' => $incrementStartEnd['startTime'],
             'end_time' => $incrementStartEnd['endTime'],
+            'start_end_time' => $incrementStartEnd['startTime'] . '-' . $incrementStartEnd['endTime'],
         ];
     }
 }

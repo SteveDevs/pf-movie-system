@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,5 +13,11 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::post('login', [
+    AuthenticatedSessionController::class, 'store']);
+Route::post('logout', [
+    AuthenticatedSessionController::class, 'destroy']);
 
-Route::view('/', 'dashboard')->name('dashboard');
+Route::view('/{any?}', 'dashboard')
+    ->name('dashboard')
+    ->where('any', '.*');

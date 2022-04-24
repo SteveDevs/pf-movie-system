@@ -16,11 +16,11 @@ use App\Http\Controllers\Api\BookingController;
 |
 */
 
-//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//   / return $request->user();
-//});
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
 
 Route::get('movie-plays', [MoviePlayController::class, 'index']);
 Route::get('bookings/create', [BookingController::class, 'create']);
-Route::get('bookings', [BookingController::class, 'index']);
+Route::get('bookings/{id}', [BookingController::class, 'index']);
 Route::post('bookings/store', [BookingController::class, 'store']);

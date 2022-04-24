@@ -1,7 +1,7 @@
 <template>
     <table>
-        <tr v-for="movie in movies">
-            <td>{{ movie.name }}</td>
+        <tr v-for="play in plays">
+            <td>{{ play.name }}</td>
         </tr>
     </table>
 </template>
@@ -9,16 +9,16 @@
 export default {
     data() {
         return {
-            movies: []
+            plays: []
         }
     },
     mounted() {
-        this.fetchMovies()
+        this.fetchPlays()
     },
     methods: {
-        fetchMovies() {
+        fetchPlays() {
             axios.get('/api/movie-plays')
-                .then(response => this.movies = response.data)
+                .then(response => this.plays = response.data)
                 .catch( error => console.log(error))
         }
     }
