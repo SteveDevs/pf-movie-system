@@ -6,6 +6,8 @@ import GuestLayout from "../layouts/Guest";
 import PlaysIndex from '../components/Plays/Index'
 import UserBookingsIndex from '../components/Users/User/Bookings/Index'
 import Login from '../components/Login'
+import Register from '../components/Register'
+import CreateBooking from '../components/Bookings/CreateBooking';
 
 function auth(to, from, next) {
     if (JSON.parse(localStorage.getItem('loggedIn'))) {
@@ -29,6 +31,18 @@ const routes = [
         ]
     },
     {
+        path: '/register',
+        redirect: { name: 'register' },
+        component: GuestLayout,
+        children: [
+            {
+                path: '/register',
+                name: 'register',
+                component: Register
+            },
+        ]
+    },
+    {
         path: '/plays',
         component: GuestLayout,
         children: [
@@ -38,6 +52,12 @@ const routes = [
                 component: PlaysIndex
             },
         ]
+    },
+    {
+        path: '/bookings/create/:id?:name',
+        name: 'bookings.create',
+        component: CreateBooking,
+        meta: { title: 'Create Booking' }
     },
     {
         component: AuthenticatedLayout,

@@ -50,8 +50,10 @@ class BookingController extends Controller
      */
     public function store(StoreMovieBookingRequest $request)
     {
+        $userId = User::where('email', $request->email)->first()->id;
         MovieBooking::create([
-            'movie_play_id' => $request->movie_play_id,
+            'user_id' => $userId,
+            'movie_play_id' => $request->play_id,
             'unique_ref' => $this->genBookingRef(),
             'status_id' => 1,
             'created_at' => now(),

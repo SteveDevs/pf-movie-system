@@ -3,11 +3,11 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Carbon\CarbonInterval;
-use Carbon\Carbon;
+use App\Traits\IncrementDateTimeTrait;
 
 class CinemaTheaterMoviePlayResource extends JsonResource
 {
+    use IncrementDateTimeTrait;
     /**
      * Transform the resource into an array.
      *
@@ -16,29 +16,23 @@ class CinemaTheaterMoviePlayResource extends JsonResource
      */
     public function toArray($request)
     {
-        $plays = [];
+        $movies = [];
         foreach ($this->plays as $play){
-            //900 = 15min
-            $startOfDay = Carbon::parse($play->start_time)->addSeconds($play->movie->duration)->startOfDay();
-            $endTime = Carbon::parse($play->start_time)->addSeconds($play->movie->duration);
-            $diffSec = $startOfDay->diffInSeconds($endTime);
-            $timeAdded = $diffSec % 900;
-            $endTime = $endTime->addSeconds($timeAdded);
-
-            $plays[] = [
+            $incrementStartEnd = $this->incrementStartEndTime($play->start_time, $play->movie->duration);
+            $movies[$play->movie_id]['id'] = $play->movie->id;
+            $movies[$play->movie_id]['movie_name'] = $play->movie->name;
+            $movies[$play->movie_id]['plays'][] = [
                 'id' => $play->id,
-                'movie_id' => $play->movie_id,
                 'theater_id' => $play->theater_id,
-                'start_time' => $play->start_time,
-                'end_time' => $endTime,
-                'movie_name' => $play->movie->name
+                'start_time' => $incrementStartEnd['startTime'],
+                'end_time' => $incrementStartEnd['endTime']
             ];
         }
         //$durationHourMin = CarbonInterval::seconds($this->theaters->movie_plays->movie->duration)->cascade()->forHumans();
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'plays' => $plays
+            'movies' => $movies
         ];
     }
 }

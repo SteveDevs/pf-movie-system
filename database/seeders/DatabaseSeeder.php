@@ -61,6 +61,7 @@ class DatabaseSeeder extends Seeder
             'duration' => 5400,
             'theater_id' => 1
         ];
+
         $movieData[] = [
             'name' => "The Matrix Revolutions",
             'duration' => 7740,//2h 9m
@@ -97,7 +98,7 @@ class DatabaseSeeder extends Seeder
             'theater_id' => 4
         ];
 
-        $now = $this->nextIncrement(now()->addMonth());
+        $now = now()->addMonth();
 
         Schema::disableForeignKeyConstraints();
         foreach ($movieData as $data){
@@ -107,12 +108,20 @@ class DatabaseSeeder extends Seeder
                 $movie->duration = $data['duration'];
                 $movie->save();
 
+
                 $movePlay = new MoviePlay();
                 $movePlay->theater_id = $data['theater_id'];
                 $movePlay->movie_id = $movie->id;
-                $movePlay->start_time = $now->addDay();
+                $movePlay->start_time = $this->nextIncrement($now->addSeconds(rand(100, 1000000))->addDay());
 
                 $movie->plays()->save($movePlay);
+                if($data['name'] == 'Holmes & Watson'){
+                    $movePlay = new MoviePlay();
+                    $movePlay->theater_id = $data['theater_id'];
+                    $movePlay->movie_id = $movie->id;
+                    $movePlay->start_time = $this->nextIncrement($now->addSeconds(rand(100, 1000000))->addDay());
+                    $movie->plays()->save($movePlay);
+                }
             }
         }
     }

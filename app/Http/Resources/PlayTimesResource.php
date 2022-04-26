@@ -2,10 +2,10 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Traits\IncrementDateTimeTrait;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class MoviePlayResource extends JsonResource
+class PlayTimesResource extends JsonResource
 {
     use IncrementDateTimeTrait;
     /**
@@ -19,11 +19,8 @@ class MoviePlayResource extends JsonResource
         $incrementStartEnd = $this->incrementStartEndTime($this->start_time, $this->movie->duration);
 
         return [
-            'movie_play_id' => $this->id,
-            'movie_name' => $this->movie->name,
-            'start_time' => $incrementStartEnd['startTime'],
-            'end_time' => $incrementStartEnd['endTime'],
-            'start_end_time' => $incrementStartEnd['startTime'] . ' until ' . $incrementStartEnd['endTime'],
+            'id' => $this->id,
+            'text' => $incrementStartEnd['startTime'] . ' until ' . $incrementStartEnd['endTime']
         ];
     }
 }

@@ -40,8 +40,8 @@ export default function useAuth() {
         user.name = response.data.name
         user.email = response.data.email
         localStorage.setItem('loggedIn', JSON.stringify(true))
-        await getAbilities()
-        await router.push({ name: 'posts.index' })
+        localStorage.setItem('email', user.email)
+        await router.push({ name: 'users.user.bookings' })
     }
 
     const getUser = () => {

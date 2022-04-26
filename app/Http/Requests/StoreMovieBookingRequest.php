@@ -24,7 +24,8 @@ class StoreMovieBookingRequest extends FormRequest
     public function rules()
     {
         return [
-            'movie_play_id' => 'required|integer|exists:movie_plays,id'
+            'play_id' => 'required|integer|exists:movie_plays,id',
+            'email' => 'required|email'
         ];
     }
 }
