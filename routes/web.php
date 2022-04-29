@@ -21,6 +21,9 @@ Route::post('logout', [
 Route::post('register', [
     RegisteredUserController::class, 'store']);
 
+
 Route::view('/{any?}', 'dashboard')
     ->name('dashboard')
     ->where('any', '.*');
+
+

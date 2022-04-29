@@ -24,7 +24,7 @@ export default function useAuth() {
         processing.value = true
         validationErrors.value = {}
 
-        axios.post('/login', loginForm)
+        await axios.post('/login', loginForm)
             .then(async response => {
                 loginUser(response)
             })

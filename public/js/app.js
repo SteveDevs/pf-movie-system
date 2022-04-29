@@ -21519,30 +21519,34 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 /* harmony import */ var _composables_bookings__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../composables/bookings */ "./resources/js/composables/bookings.js");
-/* harmony import */ var _composables_movies__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../composables/movies */ "./resources/js/composables/movies.js");
-/* harmony import */ var _composables_plays__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../composables/plays */ "./resources/js/composables/plays.js");
-/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm-bundler.js");
-
-
+/* harmony import */ var _composables_plays__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../composables/plays */ "./resources/js/composables/plays.js");
+/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm-bundler.js");
 
 
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   setup: function setup() {
-    // Define a validation schema
-    // Create a form context with the validation schema
-    var route = (0,vue_router__WEBPACK_IMPORTED_MODULE_4__.useRoute)();
+    var route = (0,vue_router__WEBPACK_IMPORTED_MODULE_3__.useRoute)();
 
-    var _usePlays = (0,_composables_plays__WEBPACK_IMPORTED_MODULE_3__["default"])(),
+    var _usePlays = (0,_composables_plays__WEBPACK_IMPORTED_MODULE_2__["default"])(),
         plays = _usePlays.plays,
         getPlaysByMovie = _usePlays.getPlaysByMovie;
 
     var _useBookings = (0,_composables_bookings__WEBPACK_IMPORTED_MODULE_1__["default"])(),
         storeBooking = _useBookings.storeBooking;
 
+    var numbers = [];
+
+    for (var i = 1; i <= 30; i++) {
+      numbers.push({
+        id: i,
+        text: i
+      });
+    }
+
     function submitForm() {
-      storeBooking(play);
+      storeBooking(movie.play_id, movie.no_tickets);
     }
 
     (0,vue__WEBPACK_IMPORTED_MODULE_0__.onMounted)(function () {
@@ -21551,11 +21555,13 @@ __webpack_require__.r(__webpack_exports__);
     var movie = (0,vue__WEBPACK_IMPORTED_MODULE_0__.reactive)({
       id: route.params.id,
       name: route.params.name,
-      play_id: ''
+      play_id: '',
+      no_tickets: 1
     });
     return {
       plays: plays,
       movie: movie,
+      numbers: numbers,
       submitForm: submitForm
     };
   }
@@ -21674,25 +21680,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  data: function data() {
-    return {
-      bookings: []
-    };
-  },
-  mounted: function mounted() {
-    this.fetchBookings();
-  },
-  methods: {
-    fetchBookings: function fetchBookings() {
-      var _this = this;
+/* harmony import */ var _composables_bookings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../composables/bookings */ "./resources/js/composables/bookings.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 
-      axios.get('/api/bookings').then(function (response) {
-        return _this.bookings = response.data;
-      })["catch"](function (error) {
-        return console.log(error);
-      });
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  setup: function setup() {
+    var _useBookings = (0,_composables_bookings__WEBPACK_IMPORTED_MODULE_0__["default"])(),
+        bookings = _useBookings.bookings,
+        getBookings = _useBookings.getBookings,
+        cancelBooking = _useBookings.cancelBooking;
+
+    function cancel(bookingId) {
+      cancelBooking(bookingId);
     }
+
+    (0,vue__WEBPACK_IMPORTED_MODULE_1__.onMounted)(function () {
+      getBookings();
+    });
+    return {
+      bookings: bookings,
+      cancel: cancel
+    };
   }
 });
 
@@ -21770,7 +21779,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_select_2 = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("select-2");
 
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("form", {
-    onSubmit: _cache[1] || (_cache[1] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
+    onSubmit: _cache[2] || (_cache[2] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
       return $setup.submitForm && $setup.submitForm.apply($setup, arguments);
     }, ["prevent"]))
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Movies "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.movie.name), 1
@@ -21782,7 +21791,18 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     }),
     options: $setup.plays,
     settings: {
-      width: '100%'
+      width: '50%'
+    }
+  }, null, 8
+  /* PROPS */
+  , ["modelValue", "options"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_select_2, {
+    modelValue: $setup.movie.no_tickets,
+    "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
+      return $setup.movie.no_tickets = $event;
+    }),
+    options: $setup.numbers,
+    settings: {
+      width: '50%'
     }
   }, null, 8
   /* PROPS */
@@ -21856,14 +21876,12 @@ var _hoisted_9 = {
 };
 var _hoisted_10 = ["disabled"];
 
-var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-  "class": "inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150 ml-4"
-}, " Register ", -1
-/* HOISTED */
-);
+var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Register ");
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _$setup$validationErr, _$setup$validationErr2;
+
+  var _component_router_link = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("router-link");
 
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", {
     onSubmit: _cache[3] || (_cache[3] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
@@ -21922,7 +21940,19 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   /* CLASS, PROPS */
   , _hoisted_10)])])], 32
   /* HYDRATE_EVENTS */
-  ), _hoisted_11], 64
+  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
+    to: {
+      name: 'register'
+    },
+    "class": "inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150 ml-4"
+  }, {
+    "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+      return [_hoisted_11];
+    }),
+    _: 1
+    /* STABLE */
+
+  })], 64
   /* STABLE_FRAGMENT */
   );
 }
@@ -22093,7 +22123,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       return $setup.registerForm.name = $event;
     }),
     id: "name",
-    type: "name",
+    type: "text",
     "class": "block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50",
     required: "",
     autofocus: "",
@@ -22183,14 +22213,48 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 
+var _hoisted_1 = {
+  "class": "font-bold text-3xl"
+};
+var _hoisted_2 = {
+  "class": "text-lg"
+};
+var _hoisted_3 = {
+  "class": "text-lg"
+};
+var _hoisted_4 = {
+  "class": "text-lg"
+};
+var _hoisted_5 = {
+  "class": "text-lg"
+};
+var _hoisted_6 = ["onClick", "disabled"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("table", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.bookings, function (booking) {
-    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(booking.name), 1
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($setup.bookings, function (booking) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", _hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(booking.movie_name), 1
     /* TEXT */
-    )]);
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h3", _hoisted_2, "Start At: " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(booking.start_time), 1
+    /* TEXT */
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h3", _hoisted_3, "End At: " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(booking.end_time), 1
+    /* TEXT */
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h3", _hoisted_4, "No of tickets: " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(booking.no_tickets), 1
+    /* TEXT */
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h3", _hoisted_5, "Ref: " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(booking.unique_ref), 1
+    /* TEXT */
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+      onClick: function onClick($event) {
+        return $setup.cancel(booking.id);
+      },
+      "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["inline-flex items-center px-4 py-2 bg-red-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150 ml-4", {
+        'opacity-25': _ctx.processing
+      }]),
+      disabled: _ctx.processing
+    }, " Cancel ", 10
+    /* CLASS, PROPS */
+    , _hoisted_6)]);
   }), 256
   /* UNKEYED_FRAGMENT */
-  ))]);
+  );
 }
 
 /***/ }),
@@ -22420,6 +22484,21 @@ window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 
 window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.withCredentials = true;
+window.axios.interceptors.response.use(function (response) {
+  return response;
+}, function (error) {
+  var _error$response, _error$response2;
+
+  if (((_error$response = error.response) === null || _error$response === void 0 ? void 0 : _error$response.status) === 401 || ((_error$response2 = error.response) === null || _error$response2 === void 0 ? void 0 : _error$response2.status) === 419) {
+    if (JSON.parse(localStorage.getItem('loggedIn'))) {
+      localStorage.setItem('loggedIn', false);
+      location.assign('/login');
+    }
+  }
+
+  return Promise.reject(error);
+});
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
@@ -22490,7 +22569,8 @@ function useAuth() {
             case 2:
               processing.value = true;
               validationErrors.value = {};
-              axios.post('/login', loginForm).then( /*#__PURE__*/function () {
+              _context2.next = 6;
+              return axios.post('/login', loginForm).then( /*#__PURE__*/function () {
                 var _ref2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(response) {
                   return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
                     while (1) {
@@ -22519,7 +22599,7 @@ function useAuth() {
                 return processing.value = false;
               });
 
-            case 5:
+            case 6:
             case "end":
               return _context2.stop();
           }
@@ -22647,7 +22727,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 function usePosts() {
   var bookings = (0,vue__WEBPACK_IMPORTED_MODULE_1__.ref)({});
   var booking = (0,vue__WEBPACK_IMPORTED_MODULE_1__.ref)({
-    booking_id: ''
+    id: ''
   });
   var router = (0,vue_router__WEBPACK_IMPORTED_MODULE_2__.useRouter)();
   var validationErrors = (0,vue__WEBPACK_IMPORTED_MODULE_1__.ref)({});
@@ -22661,7 +22741,7 @@ function usePosts() {
           switch (_context.prev = _context.next) {
             case 0:
               axios.get('/api/bookings').then(function (response) {
-                bookings.value = response.data;
+                bookings.value = response.data.data;
               });
 
             case 1:
@@ -22685,8 +22765,7 @@ function usePosts() {
 
 
   var storeBooking = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(play_id) {
-      var userEmail;
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(play_id, no_tickets) {
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
@@ -22702,13 +22781,12 @@ function usePosts() {
               isLoading.value = true;
 
               if (JSON.parse(localStorage.getItem('loggedIn'))) {
-                userEmail = localStorage.getItem('email');
                 axios.post('/api/bookings/store', {
-                  email: userEmail,
+                  no_tickets: no_tickets,
                   play_id: play_id
                 }).then(function (response) {
                   router.push({
-                    name: 'users.user.bookings.index'
+                    name: 'users.user.bookings'
                   });
                   swal({
                     icon: 'success',
@@ -22733,44 +22811,24 @@ function usePosts() {
       }, _callee2);
     }));
 
-    return function storeBooking(_x) {
+    return function storeBooking(_x, _x2) {
       return _ref2.apply(this, arguments);
     };
   }();
 
   var cancelBooking = /*#__PURE__*/function () {
-    var _ref3 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3(id) {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3(bookingId) {
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
-              swal({
-                title: 'Are you sure?',
-                text: 'You won\'t be able to revert this action!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, cancel it!',
-                confirmButtonColor: '#ef4444',
-                timer: 20000,
-                timerProgressBar: true,
-                reverseButtons: true
-              }).then(function (result) {
-                if (result.isConfirmed) {
-                  axios["delete"]('/api/bookings/cancel' + id).then(function (response) {
-                    router.push({
-                      name: 'bookings.index'
-                    });
-                    swal({
-                      icon: 'success',
-                      title: 'Booking cancelled successfully'
-                    });
-                  })["catch"](function (error) {
-                    swal({
-                      icon: 'error',
-                      title: 'Something went wrong'
-                    });
-                  });
-                }
+              axios.post('/api/bookings/cancel', {
+                id: bookingId
+              }).then(function (response) {
+                window.location.reload();
+              })["catch"](function (error) {
+                alert(error.response);
+                console.log(error);
               });
 
             case 1:
@@ -22781,99 +22839,19 @@ function usePosts() {
       }, _callee3);
     }));
 
-    return function cancelBooking(_x2) {
+    return function cancelBooking(_x3) {
       return _ref3.apply(this, arguments);
     };
   }();
 
   return {
     bookings: bookings,
+    booking: booking,
     getBookings: getBookings,
     storeBooking: storeBooking,
     cancelBooking: cancelBooking,
     validationErrors: validationErrors,
     isLoading: isLoading
-  };
-}
-
-/***/ }),
-
-/***/ "./resources/js/composables/movies.js":
-/*!********************************************!*\
-  !*** ./resources/js/composables/movies.js ***!
-  \********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ useMovies)
-/* harmony export */ });
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
-
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-
-function useMovies() {
-  var movies = (0,vue__WEBPACK_IMPORTED_MODULE_1__.ref)({});
-  var movie = (0,vue__WEBPACK_IMPORTED_MODULE_1__.ref)({});
-
-  var getMoviePlays = /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee(id) {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              axios.get('/api/movies/bookings/' + id + '/create').then(function (response) {
-                movies.value = response.data.data;
-              });
-
-            case 1:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    }));
-
-    return function getMoviePlays(_x) {
-      return _ref.apply(this, arguments);
-    };
-  }();
-
-  var getMovie = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(id) {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              axios.get('/api/movies/bookings/' + id + '/create').then(function (response) {
-                movie.value = response.data.data;
-              });
-
-            case 1:
-            case "end":
-              return _context2.stop();
-          }
-        }
-      }, _callee2);
-    }));
-
-    return function getMovie(_x2) {
-      return _ref2.apply(this, arguments);
-    };
-  }();
-
-  return {
-    movie: movie,
-    movies: movies,
-    getMoviePlays: getMoviePlays,
-    getMovie: getMovie
   };
 }
 
@@ -23048,7 +23026,7 @@ function useRegister() {
                         case 0:
                           _context.next = 2;
                           return router.push({
-                            name: 'bookings.index'
+                            name: 'login'
                           });
 
                         case 2:

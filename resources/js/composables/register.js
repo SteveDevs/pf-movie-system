@@ -28,7 +28,7 @@ export default function useRegister() {
 
         axios.post('/register', registerForm)
             .then(async response => {
-                await router.push({ name: 'bookings.index' })
+                await router.push({ name: 'login' })
             })
             .catch(error => {
                 if (error.response?.data) {

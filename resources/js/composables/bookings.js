@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 export default function usePosts() {
     const bookings = ref({})
     const booking = ref({
-        booking_id: '',
+        id: '',
     })
     const router = useRouter()
     const validationErrors = ref({})
@@ -14,7 +14,7 @@ export default function usePosts() {
     const getBookings = async () => {
         axios.get('/api/bookings')
             .then(response => {
-                bookings.value = response.data;
+                bookings.value = response.data.data;
             })
     }
 
@@ -25,15 +25,14 @@ export default function usePosts() {
             })
     }*/
 
-    const storeBooking = async (play_id) => {
+    const storeBooking = async (play_id, no_tickets) => {
         if (isLoading.value) return;
 
         isLoading.value = true
         if (JSON.parse(localStorage.getItem('loggedIn'))) {
-            const userEmail = localStorage.getItem('email');
-            axios.post('/api/bookings/store', {email: userEmail, play_id: play_id})
+            axios.post('/api/bookings/store', {no_tickets: no_tickets, play_id: play_id})
                 .then(response => {
-                    router.push({name: 'users.user.bookings.index'})
+                    router.push({name: 'users.user.bookings'})
                     swal({
                         icon: 'success',
                         title: 'Booking saved successfully'
@@ -49,40 +48,20 @@ export default function usePosts() {
 
     }
 
-    const cancelBooking = async (id) => {
-        swal({
-            title: 'Are you sure?',
-            text: 'You won\'t be able to revert this action!',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, cancel it!',
-            confirmButtonColor: '#ef4444',
-            timer: 20000,
-            timerProgressBar: true,
-            reverseButtons: true
-        })
-            .then(result => {
-                if (result.isConfirmed) {
-                    axios.delete('/api/bookings/cancel' + id)
-                        .then(response => {
-                            router.push({name: 'bookings.index'})
-                            swal({
-                                icon: 'success',
-                                title: 'Booking cancelled successfully'
-                            })
-                        })
-                        .catch(error => {
-                            swal({
-                                icon: 'error',
-                                title: 'Something went wrong'
-                            })
-                        })
-                }
+    const cancelBooking = async (bookingId) => {
+        axios.post('/api/bookings/cancel', { id: bookingId})
+            .then(response => {
+                window.location.reload()
+            })
+            .catch(error => {
+                alert(error.response)
+                console.log(error)
             })
     }
 
     return {
         bookings,
+        booking,
         getBookings,
         storeBooking,
         cancelBooking,

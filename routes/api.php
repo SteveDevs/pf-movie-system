@@ -22,12 +22,11 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
-    Route::get('bookings/create/{id}', [BookingController::class, 'create']);
     Route::get('bookings', [BookingController::class, 'index']);
     Route::post('bookings/store', [BookingController::class, 'store']);
     Route::post('bookings/cancel', [BookingController::class, 'cancelBooking']);
-
 });
+
 Route::get('movies/bookings/{id}/create', [MovieController::class, 'getMovieForBooking']);
 Route::get('movie-plays', [CinemaController::class, 'index']);
 Route::get('movies/{movie_id}/plays', [MoviePlayController::class, 'getPlayTimesForMovie']);

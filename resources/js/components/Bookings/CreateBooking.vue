@@ -1,12 +1,12 @@
 <template>
     <form @submit.prevent="submitForm">
-
         <!-- Movies -->
         <div class="mt-4">
             <label for="post-category" class="text-xl font-normal leading-normal mt-0 mb-2 text-green-800">
                 {{movie.name}}
             </label>
-            <select-2 v-model="movie.play_id" :options="plays" :settings="{ width: '100%' }"></select-2>
+            <select-2 v-model="movie.play_id" :options="plays" :settings="{ width: '50%' }"></select-2>
+            <select-2 v-model="movie.no_tickets" :options="numbers" :settings="{ width: '50%' }"></select-2>
         </div>
 
         <!-- Buttons -->
@@ -23,23 +23,27 @@
 <script>
 import { onMounted, reactive, watchEffect } from "vue";
 import useBookings from "../../composables/bookings";
-import { useForm, useField, defineRule } from "vee-validate";
-import useMovies from "../../composables/movies";
 import usePlays from "../../composables/plays";
 import { useRoute } from "vue-router";
 
 export default {
     setup() {
-        // Define a validation schema
-        // Create a form context with the validation schema
         const route = useRoute()
 
         const { plays, getPlaysByMovie } = usePlays()
 
         const { storeBooking } = useBookings()
 
+        var numbers = [];
+        for (var i = 1; i <= 30; i++) {
+            numbers.push({
+                id: i,
+                text: i
+            });
+        }
+
         function submitForm() {
-            storeBooking(play)
+            storeBooking(movie.play_id, movie.no_tickets)
         }
 
         onMounted(() => {
@@ -49,12 +53,14 @@ export default {
         const movie = reactive({
             id: route.params.id,
             name: route.params.name,
-            play_id: ''
+            play_id: '',
+            no_tickets: 1
         })
 
         return {
             plays,
             movie,
+            numbers,
             submitForm
         }
     }

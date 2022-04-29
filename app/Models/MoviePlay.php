@@ -13,7 +13,7 @@ class MoviePlay extends Model
 
     public function theater ()
     {
-        return $this->hasOne(Theater::class, 'theater_id');
+        return $this->hasOne(Theater::class, 'id', 'theater_id');
     }
 
     public function cinema ()

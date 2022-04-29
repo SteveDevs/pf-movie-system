@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreMovieBookingRequest extends FormRequest
+class CancelMovieBookingRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,7 @@ class StoreMovieBookingRequest extends FormRequest
     public function rules()
     {
         return [
-            'play_id' => 'required|integer|exists:movie_plays,id',
-            'no_tickets' => 'integer|min:1'
+            'id' => 'required|integer|exists:movie_bookings,id'
         ];
     }
 }

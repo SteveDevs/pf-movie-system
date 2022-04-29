@@ -9,14 +9,10 @@ use App\Models\MoviePlay;
 class MoviePlayController extends Controller
 {
     /**
-     *
-     * @return \Illuminate\Http\Response
+     * @param $movieId
+     * @param MoviePlay $moviePlay
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
-    {
-        return MoviePlayResource::collection(MoviePlay::with('movie')->get());
-    }
-
     public function getPlayTimesForMovie($movieId, MoviePlay $moviePlay)
     {
         $playTimes = $moviePlay->with('movie')->where('movie_id', $movieId)->get();

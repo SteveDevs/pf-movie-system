@@ -6,7 +6,7 @@
                 <label for="email" class="block font-medium text-sm text-gray-700">
                     Name
                 </label>
-                <input v-model="registerForm.name" id="name" type="name" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required autofocus autocomplete="name">
+                <input v-model="registerForm.name" id="name" type="text" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required autofocus autocomplete="name">
                 <!-- Validation Errors -->
                 <div class="text-red-600 mt-1">
                     <div v-for="message in validationErrors?.name">

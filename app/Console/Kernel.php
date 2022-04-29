@@ -15,7 +15,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('telescope:prune')->daily();
+        $schedule->call(function () {
+            \App\Models\MovieBooking::whereDate('start_time', '<=', now())->update([
+                'status_id' => 3
+            ]);
+        })->everyFifteenMinutes();
     }
 
     /**
