@@ -7,16 +7,15 @@ use App\Models\MoviePlay;
 use App\Http\Resources\BookingResource;
 use App\Http\Requests\StoreMovieBookingRequest;
 use App\Models\MovieBooking;
-use App\Traits\BookingTrait;
-use App\Traits\ErrorLogTrait;
 use App\Traits\IncrementDateTimeTrait;
 use App\Http\Resources\MoviePlayResource;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CancelMovieBookingRequest;
+use App\Http\Services\Api\UserBookMovie;
 
 class BookingController extends Controller
 {
-    use BookingTrait, IncrementDateTimeTrait, ErrorLogTrait;
+    use IncrementDateTimeTrait;
 
     /**
      * @param MovieBooking $movieBooking
@@ -48,38 +47,12 @@ class BookingController extends Controller
      * @param MoviePlay $moviePlay
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(StoreMovieBookingRequest $request, MovieBooking $movieBooking, MoviePlay $moviePlay)
+    public function store(StoreMovieBookingRequest $request)
     {
-        //Check if seats available
+        $handle = (new UserBookMovie($request->play_id, $request->no_tickets))->handle();
 
-        //Count number of bookings per play
-        $bookingsCount = MovieBooking::where('movie_play_id', $request->play_id)->where('status_id', 1)->sum('no_tickets');
-        //Theater capacity
-        $theaterAllowedAmount = $moviePlay->with('theater')
-            ->where('id', $request->play_id)->first()->theater->capacity;
-        $noTickets = $request->no_tickets ?? 1;
-
-        if($bookingsCount > $theaterAllowedAmount){
-            $this->updateErrorDBLog('Bookings exceed capacity');
-            return $this->responseError([], 'Theater has reached capacity');
-        }else if($bookingsCount === $theaterAllowedAmount){
-            return $this->responseError([], 'Theater has reached capacity');
-        }else if(($bookingsCount + $noTickets) > $theaterAllowedAmount){
-            return $this->responseError([], 'The theater does not have the capacity for your request');
-        }
-
-        //Seats are available
-        MovieBooking::create([
-            'user_id' => auth('sanctum')->user()->id,
-            'movie_play_id' => $request->play_id,
-            'unique_ref' => $this->genBookingRef(),
-            'status_id' => 1,
-            'no_tickets' => $noTickets,
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-
-        return $this->responseSuccess([], 201);
+        return $handle->success ? $this->responseSuccess([], 201)
+            : $this->responseError($handle->messages, 'An error has occurred');
     }
 
     /**
