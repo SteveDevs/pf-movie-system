@@ -48,6 +48,7 @@ php artisan migrate --seed
 npm run dev
 
 To run client set up: npm run dev
+
 To run server: php artisan serve
 
 open url at: http://localhost:8000/
