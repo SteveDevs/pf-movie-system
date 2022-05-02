@@ -38,12 +38,14 @@ DB_USERNAME=
 DB_PASSWORD=
 
 composer install
+
 npm install
 
 php artisan key:generate
+
 php artisan migrate --seed
 
-npm install
+npm run dev
 
 To run client set up: npm run dev
 To run server: php artisan serve
