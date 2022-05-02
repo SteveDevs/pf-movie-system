@@ -6,6 +6,9 @@ use App\Models\MoviePlay;
 use App\Traits\ErrorLogTrait;
 use App\Traits\BookingTrait;
 
+/**
+ * Api Service action
+ */
 class UserBookMovie extends Action
 {
     use ErrorLogTrait, BookingTrait;
@@ -33,12 +36,14 @@ class UserBookMovie extends Action
     }
 
     /**
+     *
      * @return HandleReturn
      */
     public function handle() : HandleReturn
     {
         $this->checkError();
 
+        //Create booking
         $create = MovieBooking::create([
             'user_id' => auth('sanctum')->user()->id,
             'movie_play_id' => $this->playId,
@@ -63,7 +68,7 @@ class UserBookMovie extends Action
     /**
      * @return void
      */
-    protected function checkError() : void
+    public function checkError() : void
     {
         //Check if seats available
         //Count number of bookings per play

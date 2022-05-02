@@ -1,76 +1,112 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace Tests\Feature\Api;
 
-use App\Http\Controllers\Controller;
-use App\Models\MoviePlay;
-use App\Http\Resources\BookingResource;
-use App\Http\Requests\StoreMovieBookingRequest;
-use App\Models\MovieBooking;
 use App\Traits\IncrementDateTimeTrait;
-use App\Http\Resources\MoviePlayResource;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\CancelMovieBookingRequest;
-use App\Http\Services\Api\UserBookMovie;
+use Tests\TestCase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use JMac\Testing\Traits\AdditionalAssertions;
+use App\Models\User;
+use App\Models\MovieBooking;
+use Laravel\Sanctum\Sanctum;
 
-class BookingController extends Controller
+/**
+ * Testing controllers for api calls
+ */
+class BookingControllerTest extends TestCase
 {
-    use IncrementDateTimeTrait;
+    use IncrementDateTimeTrait, DatabaseTransactions, AdditionalAssertions;
 
     /**
-     * @param MovieBooking $movieBooking
-     * @return \Illuminate\Http\JsonResponse
+     * base url for controller
+     * @var string
      */
-    public function index(MovieBooking $movieBooking)
-    {
-        $bookings = $movieBooking->with('play.movie')->where('user_id', Auth::id())
-            ->where('status_id', 1)->get();
-        return $this->responseSuccess(BookingResource::collection($bookings));
-    }
+    private string $baseUrl = '/api/bookings';
 
     /**
-     * @param MoviePlay $moviePlay
-     * @return \Illuminate\Http\JsonResponse
+     * Test middleware for controller
      */
-    public function create(MoviePlay $moviePlay)
+    public function testMiddleware()
     {
-        $moviePlay->with('movie')->first();
+        $this->assertRouteUsesMiddleware(
+            'bookings',
+            ['api', 'auth:sanctum']
+        );
 
-        return $this->responseSuccess(
-            new MoviePlayResource($moviePlay)
+        $this->assertRouteUsesMiddleware(
+            'bookings.store',
+            ['api', 'auth:sanctum']
+        );
+
+        $this->assertRouteUsesMiddleware(
+            'bookings.cancel',
+            ['api', 'auth:sanctum']
         );
     }
 
-    /**
-     * @param StoreMovieBookingRequest $request
-     * @param MovieBooking $movieBooking
-     * @param MoviePlay $moviePlay
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function store(StoreMovieBookingRequest $request)
+    public function testIndex()
     {
-        $handle = (new UserBookMovie($request->play_id, $request->no_tickets))->handle();
+        //User login
+        Sanctum::actingAs(
+            User::factory()->create(),
+            ['*']
+        );
+        $response = $this->get($this->baseUrl);
 
-        return $handle->success ? $this->responseSuccess([], 201)
-            : $this->responseError($handle->messages, 'An error has occurred');
+        //Test response success
+        $response->assertSuccessful();
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            "success",
+            "data" => [
+                '*' => [
+                    "id",
+                    "start_time",
+                    "end_time",
+                    "movie_name",
+                    "unique_ref",
+                    "no_tickets",
+                ]
+            ],
+            "message"
+        ]);
     }
 
-    /**
-     * @param CancelMovieBookingRequest $request
-     * @param MovieBooking $movieBooking
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function cancelBooking(CancelMovieBookingRequest $request, MovieBooking $movieBooking)
+    public function testStore()
     {
-        $getBooking = $movieBooking->with('play')->where('id', $request->id)->first();
+        Sanctum::actingAs(
+            User::factory()->create(),
+            ['*']
+        );
+        $response = $this->post($this->baseUrl . '/store', ['play_id' => 4, 'no_tickets' => 1]);
 
-        if(now()->addHour()->toDateTimeString() > $getBooking->play->start_time){
-            return $this->responseError([], 'Cut off time for cancelling has passed.');
+        //Test response success
+        $response->assertSuccessful();
+        $response->assertStatus(201)
+            ->assertExactJson([
+                'data' => [],
+                'message' => 'Action completed successfully',
+                'success' => true
+            ]);
+    }
+
+    public function testCancelBooking()
+    {
+        Sanctum::actingAs(
+            User::factory()->create(),
+            ['*']
+        );
+        $mb = MovieBooking::first();
+        if(isset($mb)){
+            $response = $this->post($this->baseUrl . '/cancel', ['id' => $mb->id]);
+            //Test response success
+            $response->assertStatus(200)
+                ->assertExactJson([
+                    'data' => [],
+                    'message' => 'Booking was successfully cancelled',
+                    'success' => true
+                ]);
         }
 
-        $getBooking->status_id = 2;
-        $getBooking->save();
-
-        return $this->responseSuccess([], 204,'Booking was successfully cancelled');
     }
 }

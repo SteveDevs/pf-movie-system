@@ -33,10 +33,6 @@ export default function usePosts() {
             axios.post('/api/bookings/store', {no_tickets: no_tickets, play_id: play_id})
                 .then(response => {
                     router.push({name: 'users.user.bookings'})
-                    swal({
-                        icon: 'success',
-                        title: 'Booking saved successfully'
-                    })
                 })
                 .catch(error => {
                     if (error.response?.data) {

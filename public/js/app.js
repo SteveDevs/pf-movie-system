@@ -22788,10 +22788,6 @@ function usePosts() {
                   router.push({
                     name: 'users.user.bookings'
                   });
-                  swal({
-                    icon: 'success',
-                    title: 'Booking saved successfully'
-                  });
                 })["catch"](function (error) {
                   var _error$response;
 

@@ -16,7 +16,7 @@ trait IncrementDateTimeTrait {
     {
         $startTime = Carbon::parse($startTime);
         $startTime = $this->nextIncrement($startTime)->toDateTimeString();
-        $endTime = $this->nextIncrement(Carbon::parse($startTime)->addSeconds($duration));
+        $endTime = $this->nextIncrement(Carbon::parse($startTime)->addSeconds($duration))->toDateTimeString();
 
         return [
             'startTime' => $startTime,

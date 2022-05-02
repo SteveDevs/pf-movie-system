@@ -16,6 +16,7 @@ class MoviePlayResource extends JsonResource
      */
     public function toArray($request)
     {
+        //15 min increments
         $incrementStartEnd = $this->incrementStartEndTime($this->start_time, $this->movie->duration);
 
         return [

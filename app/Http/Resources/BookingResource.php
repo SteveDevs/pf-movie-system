@@ -16,6 +16,7 @@ class BookingResource extends JsonResource
      */
     public function toArray($request)
     {
+        //15 min increments
         $incrementStartEnd = $this->incrementStartEndTime($this->play->start_time, $this->play->movie->duration);
         return [
             'id' => $this->id,

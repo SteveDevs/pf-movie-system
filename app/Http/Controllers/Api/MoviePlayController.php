@@ -9,6 +9,7 @@ use App\Models\MoviePlay;
 class MoviePlayController extends Controller
 {
     /**
+     * Get play times for movie
      * @param $movieId
      * @param MoviePlay $moviePlay
      * @return \Illuminate\Http\JsonResponse

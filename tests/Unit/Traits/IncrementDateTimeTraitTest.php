@@ -1,39 +1,36 @@
 <?php
 
-namespace App\Traits;
+namespace Tests\Unit\Traits;
 
 use Carbon\Carbon;
+use App\Traits\IncrementDateTimeTrait;
+use Tests\TestCase;
 
-trait IncrementDateTimeTraitTest {
+class IncrementDateTimeTraitTest extends TestCase
+{
+    use IncrementDateTimeTrait;
 
-    /**
-     * Forces the start and end time to be that of 15 min increments
-     * @param string $startTime
-     * @param int $duration
-     * @return array
-     */
-    public function incrementStartEndTime(string $startTime,int $duration) : array
+    public function testIncrementStartEndTime()
     {
-        $startTime = Carbon::parse($startTime);
-        $startTime = $this->nextIncrement($startTime)->toDateTimeString();
-        $endTime = $this->nextIncrement(Carbon::parse($startTime)->addSeconds($duration));
+        $startEndTime = $this->incrementStartEndTime('2022-06-07 00:30:00', 6420);
 
-        return [
-            'startTime' => $startTime,
-            'endTime' => $endTime
-        ];
+        if($startEndTime['startTime'] == '2022-06-07 00:30:00' && $startEndTime['endTime'] == '2022-06-07 02:30:00'){
+            $this->assertTrue(true);
+        }else{
+            $this->fail();
+        }
     }
 
-    /**
-     * Returns the 15min increment of the time, if the time is at 15 min then returns that
-     * @param string $dateTime
-     * @return Carbon
-     */
-    public function nextIncrement(string $dateTime) : Carbon
+    public function testNextIncrement()
     {
-        $dateTime = Carbon::parse($dateTime);
-        $offset = $dateTime->timestamp % 900;
-        return ($offset > 0) ? $dateTime->addSeconds(900 - $offset) : $dateTime;
+        $dateTime = '2022-06-07 00:23:01';
+        $next = $this->nextIncrement($dateTime)->toDateTimeString();
+
+        if(Carbon::parse($next)->toDateTimeString() == '2022-06-07 00:30:00'){
+            $this->assertTrue(true);
+        }else{
+            $this->fail();
+        }
     }
 
 }

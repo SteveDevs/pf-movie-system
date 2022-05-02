@@ -10,9 +10,4 @@ class Theater extends Model
     {
         return $this->hasOne(Cinema::class, 'cinema_id');
     }
-
-    public function moviePlays()
-    {
-        return $this->hasMany(MoviePlay::class, 'theater_id');
-    }
 }

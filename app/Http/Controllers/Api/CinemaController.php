@@ -13,7 +13,12 @@ class CinemaController extends Controller
      */
     public function index()
     {
-        return CinemaTheaterMoviePlayResource::collection(Cinema::with('plays.movie')->get());
+        //Get Movie plays for each theater/cinema, except those occurring an hour from now.
+        $data = Cinema::with(['plays' => function($q) {
+            $q->where('start_time', '>', now()->addHour()->toDateTimeString());
+        }], 'plays.movie')->get();
+
+        return $this->responseSuccess(CinemaTheaterMoviePlayResource::collection($data));
     }
 
 }

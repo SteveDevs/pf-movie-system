@@ -18,6 +18,7 @@ class CinemaTheaterMoviePlayResource extends JsonResource
     {
         $movies = [];
         foreach ($this->plays as $play){
+            //15 min
             $incrementStartEnd = $this->incrementStartEndTime($play->start_time, $play->movie->duration);
             $movies[$play->movie_id]['id'] = $play->movie->id;
             $movies[$play->movie_id]['movie_name'] = $play->movie->name;
@@ -28,7 +29,7 @@ class CinemaTheaterMoviePlayResource extends JsonResource
                 'end_time' => $incrementStartEnd['endTime']
             ];
         }
-        //$durationHourMin = CarbonInterval::seconds($this->theaters->movie_plays->movie->duration)->cascade()->forHumans();
+
         return [
             'id' => $this->id,
             'name' => $this->name,

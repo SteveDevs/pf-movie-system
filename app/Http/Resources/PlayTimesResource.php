@@ -16,6 +16,8 @@ class PlayTimesResource extends JsonResource
      */
     public function toArray($request)
     {
+        //For dropdown
+        //15 min increment
         $incrementStartEnd = $this->incrementStartEndTime($this->start_time, $this->movie->duration);
 
         return [

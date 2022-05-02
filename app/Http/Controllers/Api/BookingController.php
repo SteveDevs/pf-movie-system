@@ -23,25 +23,20 @@ class BookingController extends Controller
      */
     public function index(MovieBooking $movieBooking)
     {
-        $bookings = $movieBooking->with('play.movie')->where('user_id', Auth::id())
-            ->where('status_id', 1)->get();
+        //Show bookings for user and have not been cancelled.
+        //Show bookings where the start time of the play would not be playing for another hour, from now
+
+        $bookings = $movieBooking->with(['play' => function($q) {
+            $q->where('start_time', '>', now()->addHour());
+        }, 'movie'])->where('user_id', Auth::id())
+            ->where('status_id', 1)
+            ->get();
+
         return $this->responseSuccess(BookingResource::collection($bookings));
     }
 
     /**
-     * @param MoviePlay $moviePlay
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function create(MoviePlay $moviePlay)
-    {
-        $moviePlay->with('movie')->first();
-
-        return $this->responseSuccess(
-            new MoviePlayResource($moviePlay)
-        );
-    }
-
-    /**
+     * Make a booking
      * @param StoreMovieBookingRequest $request
      * @param MovieBooking $movieBooking
      * @param MoviePlay $moviePlay
@@ -56,21 +51,26 @@ class BookingController extends Controller
     }
 
     /**
+     * Cancel the booking
      * @param CancelMovieBookingRequest $request
      * @param MovieBooking $movieBooking
      * @return \Illuminate\Http\JsonResponse
      */
     public function cancelBooking(CancelMovieBookingRequest $request, MovieBooking $movieBooking)
     {
+        //Get booking by the booking id
         $getBooking = $movieBooking->with('play')->where('id', $request->id)->first();
 
+        //Check if the play would be occurring in an hour
         if(now()->addHour()->toDateTimeString() > $getBooking->play->start_time){
+            //Not allowed to cancel
             return $this->responseError([], 'Cut off time for cancelling has passed.');
         }
 
+        //Status id 2 = cancelled
         $getBooking->status_id = 2;
         $getBooking->save();
 
-        return $this->responseSuccess([], 204,'Booking was successfully cancelled');
+        return $this->responseSuccess([], 200,'Booking was successfully cancelled');
     }
 }

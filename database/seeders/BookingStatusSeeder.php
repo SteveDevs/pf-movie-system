@@ -15,7 +15,7 @@ class BookingStatusSeeder extends Seeder
     public function run()
     {
         //Add status to array
-        $bookingStatuses = ['Created', 'Cancelled', 'Ran'];
+        $bookingStatuses = ['Created', 'Cancelled'];
         foreach ($bookingStatuses as $bookingStatus){
             $exists = BookingStatus::where('name', $bookingStatus)->exists();
             if(!$exists){

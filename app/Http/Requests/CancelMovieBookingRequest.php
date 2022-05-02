@@ -23,6 +23,7 @@ class CancelMovieBookingRequest extends FormRequest
      */
     public function rules()
     {
+        //Movie booking id
         return [
             'id' => 'required|integer|exists:movie_bookings,id'
         ];

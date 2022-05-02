@@ -23,6 +23,7 @@ class StoreMovieBookingRequest extends FormRequest
      */
     public function rules()
     {
+        //Play id, No of tickets
         return [
             'play_id' => 'required|integer|exists:movie_plays,id',
             'no_tickets' => 'integer|min:1'

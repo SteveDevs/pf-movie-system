@@ -6,7 +6,11 @@ use App\Models\MovieBooking;
 
 trait BookingTrait
 {
-    public function genBookingRef()
+    /**
+     * Generate booking reference
+     * @return string
+     */
+    public function genBookingRef() : string
     {
         //Get last Id
         $last = MovieBooking::latest('id')->latest()->first();
