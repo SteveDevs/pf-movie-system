@@ -1,6 +1,6 @@
 Requirements:
 
-php; ^php7.4
+php: ^php7.4
 
 mysql database
 
@@ -13,7 +13,7 @@ Laravel was used as the backend and vue js was used as the frontend.
 
 How to set up and run:
 
-clone repository
+clone repository: git clone https://github.com/SteveDevs/pf-movie-system.git
 
 .env variables:
 
