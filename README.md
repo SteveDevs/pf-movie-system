@@ -1,8 +1,11 @@
 Requirements:
 
 php; ^php7.4
+
 mysql database
+
 composer
+
 npm
 
 ---------------------------------------------------------------------
